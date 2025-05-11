@@ -1,7 +1,7 @@
 import numpy as np
 import joblib
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, date
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -56,9 +56,14 @@ st.markdown("Use this tool to predict *Return on Investment (ROI)*, **Risk Level
 stock_choice = st.selectbox("Select a Stock", options=list(stock_name_to_id.keys()))
 stock_id = stock_name_to_id[stock_choice]
 
-# Date input using calendar (Streamlit's native date input widget)
-invest_date = st.date_input("Investment Date", min_value=datetime(2020, 1, 1), value=datetime(2025, 1, 1))
-takeout_date = st.date_input("Take-Out Date", min_value=invest_date, value=datetime(2025, 2, 1))
+# Define default dates safely
+default_invest_date = date(2025, 1, 1)
+default_takeout_date = date(2025, 2, 1)
+
+# Safe date inputs
+invest_date = st.date_input("Investment Date", min_value=date(2020, 1, 1), value=default_invest_date)
+safe_takeout_default = max(invest_date, default_takeout_date)
+takeout_date = st.date_input("Take-Out Date", min_value=invest_date, value=safe_takeout_default)
 
 # Amount input
 amount = st.number_input("Investment Amount ($)", min_value=1.0, value=1000.0, step=10.0)
@@ -92,7 +97,7 @@ if st.button("Predict"):
         profit = (roi_percent / 100) * amount
         new_total = amount + profit
 
-        # Display results with enhanced UI
+        # Display results
         st.success(f"**Predicted ROI:** {roi_percent:.2f}%")
         st.info(f"**Risk Category:** {risk_label} (Class {risk_class})")
         st.markdown(f"**Net Profit:** ${profit:.2f}")
