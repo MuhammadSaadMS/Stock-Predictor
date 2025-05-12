@@ -6,9 +6,9 @@ from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load individual models and scaler
-roi_model = load_model('roi_model.keras')
-risk_model = load_model('risk_model.keras')
+# ✅ Load individual models and scaler (.h5 format)
+roi_model = load_model('roi_model.h5')
+risk_model = load_model('risk_model.h5')
 scaler = joblib.load('scaler.pkl')
 
 # Risk labels
